@@ -1,182 +1,55 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Para Tyra 💗</title>
-
-<style>
-
-body{
-margin:0;
-background:#F5E8DC;
-overflow:hidden;
-font-family:Arial;
-}
-
-canvas{
-position:absolute;
-top:0;
-left:0;
-}
-
-.text{
-position:absolute;
-bottom:40px;
-width:100%;
-text-align:center;
-font-size:28px;
-color:#5C4033;
-}
-
-</style>
+    <meta charset="UTF-8">
+    <title>Para el amor de mi vida</title>
+    <style>
+        body { background-color: #ffeef2; margin: 0; font-family: sans-serif; color: #664d4d; }
+        #content { width: 900px; margin: 50px auto; position: relative; }
+        #code { float: left; width: 440px; padding-top: 50px; font-size: 18px; line-height: 1.6; }
+        #garden { float: right; width: 460px; height: 500px; }
+        #elapseClock { font-size: 24px; margin-top: 20px; font-weight: bold; }
+        .digit { color: #f36; }
+    </style>
 </head>
-
 <body>
+    <div id="content">
+        <div id="code">
+            Para el amor de mi vida:<br/><br/>
+            Si pudiera elegir un lugar seguro, sería a tu lado.<br/>
+            Cuanto más tiempo estoy contigo más te amo.<br/>
+            <strong>Mi amor por ti comenzó hace...</strong>
+            <div id="elapseClock"></div>
+        </div>
+        <canvas id="garden"></canvas>
+    </div>
 
-<canvas id="tree"></canvas>
+    <!-- Aquí iría el script que dibuja el árbol y el contador -->
+    <script>
+        // Configura aquí TU FECHA de aniversario: (Año, Mes-1, Día, Hora, Minuto)
+        var together = new Date();
+        together.setFullYear(2023, 2, 14); // Ejemplo: 14 de Marzo 2023
+        together.setHours(20);
+        together.setMinutes(0);
+        together.setSeconds(0);
 
-<div class="text">
-Tyra... mi amor por ti crece cada día 💗
-</div>
+        setInterval(function () {
+            timeElapse(together);
+        }, 1000);
 
-<script>
-
-const canvas = document.getElementById("tree");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let branches = [];
-let hearts = [];
-
-class Branch{
-constructor(x,y,len,angle,width){
-this.x=x
-this.y=y
-this.len=len
-this.angle=angle
-this.width=width
-}
-
-draw(){
-
-ctx.beginPath()
-
-let x2 = this.x + Math.cos(this.angle)*this.len
-let y2 = this.y + Math.sin(this.angle)*this.len
-
-ctx.moveTo(this.x,this.y)
-ctx.lineTo(x2,y2)
-
-ctx.strokeStyle="#2e8b57"
-ctx.lineWidth=this.width
-ctx.stroke()
-
-if(this.len>10){
-
-branches.push(new Branch(
-x2,
-y2,
-this.len*0.7,
-this.angle + (Math.random()*0.6-0.3),
-this.width*0.7
-))
-
-branches.push(new Branch(
-x2,
-y2,
-this.len*0.7,
-this.angle - (Math.random()*0.6-0.3),
-this.width*0.7
-))
-
-}else{
-
-for(let i=0;i<3;i++){
-hearts.push(new Heart(x2,y2))
-}
-
-}
-
-}
-
-}
-
-class Heart{
-
-constructor(x,y){
-this.x=x
-this.y=y
-this.size=Math.random()*8+4
-this.speed=Math.random()*1+0.5
-this.color=`hsl(${Math.random()*360},70%,60%)`
-}
-
-draw(){
-
-ctx.fillStyle=this.color
-
-ctx.beginPath()
-
-ctx.moveTo(this.x,this.y)
-
-ctx.bezierCurveTo(
-this.x,this.y-this.size,
-this.x-this.size,this.y-this.size,
-this.x-this.size,this.y
-)
-
-ctx.bezierCurveTo(
-this.x-this.size,this.y+this.size,
-this.x,this.y+this.size,
-this.x,this.y+this.size*2
-)
-
-ctx.bezierCurveTo(
-this.x,this.y+this.size,
-this.x+this.size,this.y+this.size,
-this.x+this.size,this.y
-)
-
-ctx.bezierCurveTo(
-this.x+this.size,this.y-this.size,
-this.x,this.y-this.size,
-this.x,this.y
-)
-
-ctx.fill()
-
-this.y+=this.speed
-
-}
-
-}
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height)
-
-branches.forEach(b=>b.draw())
-
-hearts.forEach(h=>h.draw())
-
-requestAnimationFrame(animate)
-
-}
-
-branches.push(
-new Branch(
-canvas.width/2,
-canvas.height,
-120,
--Math.PI/2,
-12
-))
-
-animate()
-
-</script>
-
+        function timeElapse(date) {
+            var current = Date();
+            var seconds = (Date.parse(current) - Date.parse(date)) / 1000;
+            var days = Math.floor(seconds / (3600 * 24));
+            seconds = seconds % (3600 * 24);
+            var hours = Math.floor(seconds / 3600);
+            seconds = seconds % 3600;
+            var minutes = Math.floor(seconds / 60);
+            seconds = seconds % 60;
+            
+            var result = `<span class="digit">${days}</span> días <span class="digit">${hours}</span> horas <span class="digit">${minutes}</span> minutos <span class="digit">${seconds}</span> segundos`; 
+            document.getElementById("elapseClock").innerHTML = result;
+        }
+    </script>
 </body>
 </html>
