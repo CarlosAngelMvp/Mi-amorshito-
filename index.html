@@ -2,130 +2,30 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Para Tyra 💖</title>
+<title>Para Tyra 💗</title>
 
 <style>
 
 body{
 margin:0;
-background:#f7f2ea;
-font-family:Arial;
+background:#F5E8DC;
 overflow:hidden;
-text-align:left;
+font-family:Arial;
 }
 
-/* Texto */
+canvas{
+position:absolute;
+top:0;
+left:0;
+}
 
 .text{
 position:absolute;
-left:60px;
-top:120px;
-width:350px;
-color:#444;
-font-size:20px;
-opacity:0;
-animation:showText 3s forwards;
-animation-delay:6s;
-}
-
-/* Árbol */
-
-.tree{
-position:absolute;
-bottom:0;
-right:200px;
-width:200px;
-height:300px;
-}
-
-/* Tallo */
-
-.stem{
-position:absolute;
-bottom:0;
-left:95px;
-width:10px;
-height:0;
-background:#0f7a60;
-animation:growStem 3s forwards;
-}
-
-/* Corazón */
-
-.heart{
-position:absolute;
-top:40px;
-left:0;
-right:0;
-margin:auto;
-width:200px;
-height:200px;
-opacity:0;
-animation:showHeart 3s forwards;
-animation-delay:3s;
-}
-
-.heart:before,
-.heart:after{
-content:"";
-position:absolute;
-width:100px;
-height:160px;
-background:#ff6aa2;
-border-radius:100px 100px 0 0;
-}
-
-.heart:before{
-left:100px;
-transform:rotate(-45deg);
-transform-origin:0 100%;
-}
-
-.heart:after{
-left:0;
-transform:rotate(45deg);
-transform-origin:100% 100%;
-}
-
-/* Pétalos */
-
-.petal{
-position:absolute;
-width:12px;
-height:12px;
-background:pink;
-border-radius:50%;
-animation:fall linear infinite;
-}
-
-@keyframes fall{
-0%{transform:translateY(-50px);}
-100%{transform:translateY(800px);}
-}
-
-/* Animaciones */
-
-@keyframes growStem{
-0%{height:0;}
-100%{height:180px;}
-}
-
-@keyframes showHeart{
-0%{opacity:0; transform:scale(0);}
-100%{opacity:1; transform:scale(1);}
-}
-
-@keyframes showText{
-0%{opacity:0;}
-100%{opacity:1;}
-}
-
-#timer{
-position:absolute;
-bottom:30px;
-left:60px;
-font-size:24px;
-color:#333;
+bottom:40px;
+width:100%;
+text-align:center;
+font-size:28px;
+color:#5C4033;
 }
 
 </style>
@@ -133,72 +33,150 @@ color:#333;
 
 <body>
 
+<canvas id="tree"></canvas>
+
 <div class="text">
-
-<b>Para el amor de mi vida:</b><br><br>
-
-Si pudiera elegir un lugar seguro, sería a tu lado.<br>
-Cuanto más tiempo estoy contigo más te amo.<br><br>
-
-Hoy quiero preguntarte algo muy importante…<br><br>
-
-<b>¿Quieres ser mi novia oficialmente? 💖</b>
-
+Tyra... mi amor por ti crece cada día 💗
 </div>
-
-<div class="tree">
-
-<div class="stem"></div>
-
-<div class="heart"></div>
-
-</div>
-
-<div id="timer"></div>
 
 <script>
 
-/* pétalos */
+const canvas = document.getElementById("tree");
+const ctx = canvas.getContext("2d");
 
-for(let i=0;i<40;i++){
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-let petal=document.createElement("div")
-petal.className="petal"
+let branches = [];
+let hearts = [];
 
-petal.style.left=Math.random()*window.innerWidth+"px"
-petal.style.animationDuration=5+Math.random()*5+"s"
+class Branch{
+constructor(x,y,len,angle,width){
+this.x=x
+this.y=y
+this.len=len
+this.angle=angle
+this.width=width
+}
 
-document.body.appendChild(petal)
+draw(){
+
+ctx.beginPath()
+
+let x2 = this.x + Math.cos(this.angle)*this.len
+let y2 = this.y + Math.sin(this.angle)*this.len
+
+ctx.moveTo(this.x,this.y)
+ctx.lineTo(x2,y2)
+
+ctx.strokeStyle="#2e8b57"
+ctx.lineWidth=this.width
+ctx.stroke()
+
+if(this.len>10){
+
+branches.push(new Branch(
+x2,
+y2,
+this.len*0.7,
+this.angle + (Math.random()*0.6-0.3),
+this.width*0.7
+))
+
+branches.push(new Branch(
+x2,
+y2,
+this.len*0.7,
+this.angle - (Math.random()*0.6-0.3),
+this.width*0.7
+))
+
+}else{
+
+for(let i=0;i<3;i++){
+hearts.push(new Heart(x2,y2))
+}
 
 }
 
-/* contador */
-
-let startDate = new Date("2024-01-01")
-
-function updateTimer(){
-
-let now = new Date()
-
-let diff = now - startDate
-
-let days = Math.floor(diff/(1000*60*60*24))
-let hours = Math.floor(diff/(1000*60*60))%24
-let minutes = Math.floor(diff/(1000*60))%60
-let seconds = Math.floor(diff/1000)%60
-
-document.getElementById("timer").innerHTML =
-"Mi amor por ti comenzó hace...<br>"+
-days+" días "+
-hours+" horas "+
-minutes+" minutos "+
-seconds+" segundos"
+}
 
 }
 
-setInterval(updateTimer,1000)
+class Heart{
+
+constructor(x,y){
+this.x=x
+this.y=y
+this.size=Math.random()*8+4
+this.speed=Math.random()*1+0.5
+this.color=`hsl(${Math.random()*360},70%,60%)`
+}
+
+draw(){
+
+ctx.fillStyle=this.color
+
+ctx.beginPath()
+
+ctx.moveTo(this.x,this.y)
+
+ctx.bezierCurveTo(
+this.x,this.y-this.size,
+this.x-this.size,this.y-this.size,
+this.x-this.size,this.y
+)
+
+ctx.bezierCurveTo(
+this.x-this.size,this.y+this.size,
+this.x,this.y+this.size,
+this.x,this.y+this.size*2
+)
+
+ctx.bezierCurveTo(
+this.x,this.y+this.size,
+this.x+this.size,this.y+this.size,
+this.x+this.size,this.y
+)
+
+ctx.bezierCurveTo(
+this.x+this.size,this.y-this.size,
+this.x,this.y-this.size,
+this.x,this.y
+)
+
+ctx.fill()
+
+this.y+=this.speed
+
+}
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height)
+
+branches.forEach(b=>b.draw())
+
+hearts.forEach(h=>h.draw())
+
+requestAnimationFrame(animate)
+
+}
+
+branches.push(
+new Branch(
+canvas.width/2,
+canvas.height,
+120,
+-Math.PI/2,
+12
+))
+
+animate()
 
 </script>
 
 </body>
-  </html>
+</html>
